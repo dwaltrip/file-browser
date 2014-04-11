@@ -1,0 +1,30 @@
+
+======
+Schema
+======
+
+Item Model
+----------
+Fields:
+  - name (String)
+  - kind (Number)
+    * Enum with values: [FOLDER, FILE]
+  - parentId (ObjectId)
+  - created_at (Date)
+  - updated_at (Date)
+
+
+=======
+Routing
+=======
+
+Method    URL route     Resopnse type(s)    Description
+
+GET       /items        HTML, JSON          Shows list of root directories
+POST      /items        JSON                Create a new item and saves it to database, with attribute values given by the POST data
+
+GET       /items/:id    HTML, JSON          Shows the folder or file specified by :id
+PUT       /items/:id    JSON                Updates the attributes for the item specified by :id
+DELETE    /items/:id    JSON                Deletes the item specified by :id
+
+

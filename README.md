@@ -9,7 +9,7 @@ In the console, run:
     bower install
     mkdir data
 
-Open up second console and start up mongodb
+Open up a second console and start up mongodb:
 
     mongod --dbpath ~/Documents/code/node-js/file-browser/data
 
