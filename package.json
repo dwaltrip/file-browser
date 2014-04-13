@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "dependencies": {
     "express": "*",
+    "body-parser": "latest",
     "hogan-express": "latest",
     "mongoose": "latest"
   },

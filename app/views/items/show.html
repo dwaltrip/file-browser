@@ -1,0 +1,27 @@
+<p><a href='{{ back_link }}'>Up one level</a></p>
+
+<ul>
+  <li>Name: {{ item.name }}</li>
+  <li>Kind: {{ item.kind }}</li>
+  <li>hasParent: {{ item.hasParent }}</li>
+  <li>_id: {{ item._id }}</li>
+  <li>created_at: {{ item.created_at }}</li>
+</ul>
+
+{{#hasChildren}}
+<table class='table table-striped'>
+  <thead>
+    <td>Name</td>
+    <td>Created at</td>
+  </thead>
+
+  {{#childItems}}
+    <tr>
+      <td><a href='/projects/{{ _id }}'>{{ name }}</a></td>
+      <td>{{ created_at }}</td>
+    </tr>
+  {{/childItems}}
+</table>
+{{/hasChildren}}
+
+<p><a href='/items/new?parentId={{ item._id }}'>Add child item</a></p>

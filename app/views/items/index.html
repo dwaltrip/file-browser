@@ -1,0 +1,17 @@
+<h3>Projects</h3>
+
+<table class='table table-striped'>
+  <thead>
+    <td>Name</td>
+    <td>Created at</td>
+  </thead>
+
+  {{#projects}}
+    <tr>
+      <td><a href='/projects/{{ _id }}'>{{ name }}</a></td>
+      <td>{{ created_at }}</td>
+    </tr>
+  {{/projects}}
+</table>
+
+<p><a href='/projects/new'>Create new project</a></p>

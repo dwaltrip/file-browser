@@ -1,33 +1,26 @@
-var Item = require('../app/models/item').Item;
 
 module.exports = function(app){
 
-	//home route
-	var main = require('../app/controllers/main');
-  console.log('----', typeof(main), '--', typeof(main.homepage));
-	app.get('/', main.homepage);
+  var main = require('../app/controllers/main');
+  var items = require('../app/controllers/items').controller;
 
-  app.get('/test', function(req, res) {
-    var item_string = '';
-      var new_item1 = new Item({ name: 'test-item-1', kind: 1 });
+	// root route
+	app.get('/', items.index);
 
-      new_item1.save(function (err, saved_item1) {
-        if (err) return console.error(err);
+  // test route
+  app.get('/test', main.test);
 
-        console.log('======= new item:', saved_item1.name);
-        item_string += saved_item1.name;
+	app.get('/projects', items.index);
+	app.get('/items', items.index);
 
-        var new_item2 = new Item({ name: 'test-item-2', kind: 1 });
+	app.post('/items', items.create);
 
-        new_item2.save(function (err, saved_item2) {
-          if (err) return console.error(err);
+	app.get('/projects/new', items.new);
+	app.get('/items/new', items.new);
 
-          console.log('======= new item:', saved_item2.name);
-          item_string += ', ' + saved_item2.name;
-          res.send("Hi, this is a test page, generated without a template using 'res.send(...)'. Item string: " + item_string);
-        });
-      });
-  });
+
+	app.get('/projects/:id', items.show);
+	app.get('/items/:id', items.show);
 
   // final handler, return 404
   app.use(function(req, res, next) {

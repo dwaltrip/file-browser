@@ -1,0 +1,30 @@
+<p><a href='/items'>Back to index</a></p>
+
+{{^parentId}}
+  <h3>Create New Project</h3>
+{{/parentId}}
+{{#parentId}}
+  <h3>Create New Item</h3>
+{{/parentId}}
+
+<form action='{{ action }}' method='post'>
+  <p>
+    <label for='name'>Name:</label><br />
+    <input name='name' type='text'/>
+  <p/>
+
+  <!--
+  <input type='radio' id='radio2' name='kind' value='file' checked>
+  <label for='radio2'>File</label>
+  <input type='radio' id='radio1' name='kind' value='folder'>
+  <label for='radio1'>Folder</label>
+  -->
+
+  <p>
+    <input type='submit' name='submit' value='Submit' />
+  <p/>
+
+  {{#parentId}}
+    <input type='hidden' name='parentId' value='{{parentId}}'>
+  {{/parentId}}
+</form>

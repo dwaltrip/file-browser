@@ -2,7 +2,7 @@ var path = require('path'),
     rootPath = path.normalize(__dirname + '/..'),
     env = process.env.NODE_ENV || 'development';
 
-var app_name = 'app-template';
+var app_name = 'file-browser';
 
 var config = {
   development: {

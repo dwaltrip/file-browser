@@ -1,4 +1,5 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 
 module.exports = function(app, config) {
 
@@ -7,12 +8,25 @@ module.exports = function(app, config) {
   console.log('---- configuring express with env:', env);
   if (env == 'development') {
 
+    // basic request logger
     app.use(function(req, res, next) {
-
       if (req.path != req.url)
         console.log('-- %s %s, %s', req.method, req.path, req.url);
       else
         console.log('-- %s %s', req.method, req.path);
+      next();
+    });
+
+    app.use(bodyParser());
+
+    // logger for querystring and POST data
+    app.use(function(req, res, next) {
+      if((Object.keys(req.body).length > 0)) {
+        console.log('-- with POST data: %s', JSON.stringify(req.body));
+      }
+      if(Object.keys(req.query).length > 0) {
+        console.log('-- with querystring: %s', JSON.stringify(req.query));
+      }
       next();
     });
 

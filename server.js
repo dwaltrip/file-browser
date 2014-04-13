@@ -1,9 +1,3 @@
-/**
- * Module dependencies.
- */
-
-console.log('---- inside server.js');
-
 var express = require('express'),
     http = require('http'),
     path = require('path'),
@@ -13,13 +7,11 @@ var express = require('express'),
 var app = express();
 
 // all environments
-app.set('port', process.env.PORT || config.PORT);
+//app.set('port', process.env.PORT || config.PORT);
+app.set('port', 582);
 
-
-//require('./config/assets'); //configure assets
 require('./config/express')(app, config);
 require('./config/routes')(app);
-
 
 // Set up db connection
 var connect = function () {
