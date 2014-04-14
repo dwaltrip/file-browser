@@ -6,17 +6,24 @@ module.exports = function(app){
 	// root route
 	app.get('/', items.index);
 
-	app.get('/projects', items.index);
-	app.get('/items', items.index);
+	app.get('/items',     items.index);
+	app.get('/projects',  items.index);
 
 	app.post('/items', items.create);
 
-	app.get('/projects/new', items.new);
-	app.get('/items/new', items.new);
+	app.get('/items/new',     items.new);
+	app.get('/projects/new',  items.new);
 
+	app.get('/items/:id/edit',    items.edit);
+	app.get('/projects/:id/edit', items.edit);
 
-	app.get('/projects/:id', items.show);
-	app.get('/items/:id', items.show);
+  // should be PUT, but methodOverride wasn't working
+  // fix later
+	app.post('/items/:id',     items.update);
+	app.post('/projects/:id',  items.update);
+
+	app.get('/projects/:id',  items.show);
+	app.get('/items/:id',     items.show);
 
   // for development only, clear Items collection
   app.get('/clear', items.clear_collection);

@@ -2,9 +2,9 @@
  * Some custom styling
  * ------------------- */
 
-.new-item-link-container {
+.action-link-container {
   padding-left: 0.7em;
-  margin: 4px 10px 4px 0;
+  margin: 4px 0 4px 0;
 }
 
 span.new-item-link-icon {
@@ -13,6 +13,32 @@ span.new-item-link-icon {
 
 span.new-item-link-text {
   margin-left: 3px;
+}
+
+.item-header {
+  vertical-align: middle;
+}
+
+.item-name-container {
+  padding-left: 5px;
+}
+
+.item-actions-container {
+  padding-right: 5px;
+}
+
+.item-actions-container, .item-name-container {
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+.item-action, .item-name {
+  display: inline-block;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 div#debug-container ul {

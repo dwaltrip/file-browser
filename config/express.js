@@ -1,5 +1,6 @@
-var express = require('express');
-var bodyParser = require('body-parser');
+var express = require('express'),
+    bodyParser = require('body-parser'),
+    methodOverride = require('method-override');
 
 module.exports = function(app, config) {
 
@@ -8,12 +9,15 @@ module.exports = function(app, config) {
   console.log('---- configuring express with env:', env);
   if (env == 'development') {
 
+    app.use(methodOverride());
+
     // basic request logger
     app.use(function(req, res, next) {
       if (req.path != req.url)
         console.log('-- %s %s, %s', req.method, req.path, req.url);
       else
         console.log('-- %s %s', req.method, req.path);
+
       next();
     });
 
@@ -21,12 +25,11 @@ module.exports = function(app, config) {
 
     // logger for querystring and POST data
     app.use(function(req, res, next) {
-      if((Object.keys(req.body).length > 0)) {
-        console.log('-- with POST data: %s', JSON.stringify(req.body));
-      }
-      if(Object.keys(req.query).length > 0) {
+      if((Object.keys(req.body).length > 0))
+        console.log('-- with data: %s', JSON.stringify(req.body));
+      if(Object.keys(req.query).length > 0)
         console.log('-- with querystring: %s', JSON.stringify(req.query));
-      }
+
       next();
     });
 

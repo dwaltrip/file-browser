@@ -1,25 +1,33 @@
 <p><a href='{{ back_link }}'>Back</a></p>
 
 {{^parentId}}
-  <h3>Create New Project</h3>
+  <h3>{{ action_title }} Project</h3>
 {{/parentId}}
+
 
 {{#parentId}}
-<h3>Create New {{#lambdas.capitalize}} {{ kind_string }} {{/lambdas.capitalize}}</h3>
+  <!--<h3>{{ action_title }} {{#lambdas.capitalize}}{{ kind_string }}{{/lambdas.capitalize}}</h3>-->
+  <h3>{{ action_title }} {{ kind_string }}</h3>
 {{/parentId}}
 
-  <div class='container'>
-  <form action='{{ action }}' method='post'>
+<div class='container'>
+  <form action='{{ form_action }}' method='post'>
     <p>
       <label for='name'>Name:</label><br>
       <input name='name' type='text'/>
     <p/>
-    <p><input type='submit' name='submit' value='Submit' /></p>
+    <p><input type='submit' name='submit' value='{{button_text}}{{^button_text}}Submit{{/button_text}}' /></p>
 
-    <input type='hidden' name='kind' value='{{kind}}'>
-    {{#parentId}}
-      <input type='hidden' name='parentId' value='{{parentId}}'>
-    {{/parentId}}
+    {{^edit}}
+      <input type='hidden' name='kind' value='{{kind}}'>
+      {{#parentId}}
+        <input type='hidden' name='parentId' value='{{parentId}}'>
+      {{/parentId}}
+    {{/edit}}
+
+    {{#form_method}}
+      <input type='hidden' name='_method' value='{{form_method}}'>
+    {{/form_method}}
   </form>
 </div>
 

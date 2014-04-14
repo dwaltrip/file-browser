@@ -29,6 +29,14 @@ var item_parent_path = function(item) {
     return (item.hasParent) ? ('/items/' + item.parentId) : '/projects';
 };
 
+var item_path = function(item) {
+  var item = item || {};
+  if (!item.hasParent)
+    return '/projects/' + item._id;
+  else
+    return item._id ? '/items/' + item._id : '/items';
+};
+
 // ----------------
 // Items Controller
 // ----------------
@@ -41,6 +49,8 @@ exports.controller = {
   },
 
   show: function(req, res) {
+    console.log('-- req.params: %s', JSON.stringify(req.params)); // would like to abstract this out
+
     Item.findById(req.params.id, function(err, item) {
       item.findProjectRoot(function(err, project) {
         item.childrenSorted(function(childItems) {
@@ -58,17 +68,40 @@ exports.controller = {
 
   new: function(req, res) {
     var params = {
-      action:       '/items',
+      action_title: 'Create New',
       parentId:     req.query.parentId || null,
       kind:         req.query.kind == 'file' ? Item.FILE : Item.FOLDER,
-      kind_string:  req.query.kind == 'file' ? 'file' : 'folder',
-      back_link:    req.query.parentId ? ('/items/' + req.query.parentId) : '/projects'
+      kind_string:  req.query.kind == 'file' ? 'File' : 'Folder',
+      back_link:    req.query.parentId ? ('/items/' + req.query.parentId) : '/projects',
+      form_action:  '/items'
     }
 
     render(res, 'items/new', params);
   },
 
+  edit: function(req, res) {
+    console.log('-- req.params: %s', JSON.stringify(req.params)); // would like to abstract this out
+
+    Item.findById(req.params.id, function(err, item) {
+      var params = {
+        action_title: 'Edit',
+        button_text:  'Update',
+        edit:         true,
+        parentId:     item.parentId || null,
+        kind:         item.kind,
+        kind_string:  item.isFile ? 'File' : 'Folder',
+        back_link:    '/items/' + item._id,
+        form_action:  '/items/' + item._id,
+        form_method:  'put'
+      }
+
+      render(res, 'items/new', params);
+    });
+  },
+
   create: function(req, res) {
+    console.log('-- req.params: %s', JSON.stringify(req.params)); // would like to abstract this out
+
     var kind = (parseInt(req.body.kind, 10) == Item.FILE) ? Item.FILE : Item.FOLDER;
     var new_item = new Item({ name: req.body.name, kind: kind });
 
@@ -89,6 +122,20 @@ exports.controller = {
     else {
       save_and_redirect();
     }
+  },
+
+  update: function(req, res) {
+    console.log('-- req.params: %s', JSON.stringify(req.params)); // would like to abstract this out
+
+    var new_name = req.body.name;
+    if (new_name && new_name.trim().length > 0) {
+      var updated_at = new Date;
+      Item.findByIdAndUpdate(req.params.id, { name: new_name, updated_at: updated_at }, function(err, item) {
+        res.redirect(item_path(item));
+      });
+    }
+    else
+      res.redirect('/items/' + req.params.id);
   },
 
   // convencience action for development, deletes all records from Item collection
