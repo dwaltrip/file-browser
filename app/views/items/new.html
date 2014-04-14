@@ -1,12 +1,11 @@
-<p><a href='{{ back_link }}'>Back</a></p>
+{{#yield-back_link}}
+  <p><a href='{{ back_link }}'>Back</a></p>
+{{/yield-back_link}}
 
 {{^parentId}}
   <h3>{{ action_title }} Project</h3>
 {{/parentId}}
-
-
 {{#parentId}}
-  <!--<h3>{{ action_title }} {{#lambdas.capitalize}}{{ kind_string }}{{/lambdas.capitalize}}</h3>-->
   <h3>{{ action_title }} {{ kind_string }}</h3>
 {{/parentId}}
 

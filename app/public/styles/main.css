@@ -15,6 +15,26 @@ span.new-item-link-text {
   margin-left: 3px;
 }
 
+table.item-table {
+  margin-bottom: 0;
+}
+
+.file-contents-container {
+  text-align: left;
+  display: inline-block;
+}
+
+.file-contents {
+  width: 100%;
+}
+
+.delete-form {
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  margin-top: 5px;
+}
+
 .item-header {
   vertical-align: middle;
 }

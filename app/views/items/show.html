@@ -1,9 +1,11 @@
-<p><a href='{{ back_link }}'>
-  {{#item}}
-    {{#hasParent}}Up one level{{/hasParent}}
-    {{^hasParent}}Project list{{/hasParent}}
-  {{/item}}
-</a></p>
+{{#yield-back_link}}
+  <p><a href='{{ back_link }}'>
+    {{#item}}
+      {{#hasParent}}Up one level{{/hasParent}}
+      {{^hasParent}}Project list{{/hasParent}}
+    {{/item}}
+  </a></p>
+{{/yield-back_link}}
 
 <h2>{{ project_name }}</h2>
 
@@ -47,7 +49,7 @@
 </div>
 
 {{# hasChildren }}
-  <table class='table table-striped table-bordered'>
+  <table class='table table-striped table-bordered item-table'>
     <thead>
       <td></td>
       <td class='text-center'>Name</td>
@@ -68,6 +70,23 @@
   </table>
 {{/hasChildren}}
 
+{{#item}}{{#isFile}}
+  <div class='container file-contents-container'>
+    <textarea name='contents' class='file-contents' rows='5' readonly='true' placeholder='No file contents...'></textarea>
+  </div>
+  <br>
+{{/isFile}}{{/item}}
+
+<div class='container'>
+  <form action='/items/{{ item._id }}/delete' method='post' class='delete-form'>
+    <button type='submit' value='submit' class='btn btn-danger btn-xs'>
+      <span class='glyphicon glyphicon-remove new-item-link-icon'></span>
+      <span class='btn-text'>Delete {{#lambdas.capitalize}}{{ item.kind_string }}{{/lambdas.capitalize}}</span>
+    </button>
+  </form>
+</div>
+
+{{#debug}}
 <br>
 <br>
 <div id='debug-container'>
@@ -91,3 +110,4 @@
     <li>projectId: {{ item.projectId }}</li>
   </ul>
 </div>
+{{/debug}}

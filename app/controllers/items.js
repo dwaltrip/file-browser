@@ -138,6 +138,24 @@ exports.controller = {
       res.redirect('/items/' + req.params.id);
   },
 
+  destroy: function(req, res) {
+    console.log('-- req.params: %s', JSON.stringify(req.params)); // would like to abstract this out
+
+    Item.findById(req.params.id, function(err, item) {
+      var idsToDestroy = [item._id];
+
+      item.findAllChildren(function(childrenIds, childrenNames) {
+        console.log('-- items.destroy -- item.name: %s, childrenNames: %s', item.name, JSON.stringify(childrenNames));
+        idsToDestroy.concat(childrenIds);
+
+        Item.remove({ '_id': { $in: idsToDestroy } }, function(err, removedItems) {
+          if (err) console.log('---- items controller destroy, error:', err);
+          res.redirect(item_parent_path(item));
+        });
+      });
+    });
+  },
+
   // convencience action for development, deletes all records from Item collection
   clear_collection: function(req, res) {
     Item.remove({}, function(err) {

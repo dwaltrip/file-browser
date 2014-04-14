@@ -14,6 +14,9 @@ module.exports = function(app){
 	app.get('/items/new',     items.new);
 	app.get('/projects/new',  items.new);
 
+	app.get('/items/:id',     items.show);
+	app.get('/projects/:id',  items.show);
+
 	app.get('/items/:id/edit',    items.edit);
 	app.get('/projects/:id/edit', items.edit);
 
@@ -22,8 +25,8 @@ module.exports = function(app){
 	app.post('/items/:id',     items.update);
 	app.post('/projects/:id',  items.update);
 
-	app.get('/projects/:id',  items.show);
-	app.get('/items/:id',     items.show);
+	app.post('/items/:id/delete',     items.destroy);
+	app.post('/projects/:id/delete',  items.destroy);
 
   // for development only, clear Items collection
   app.get('/clear', items.clear_collection);

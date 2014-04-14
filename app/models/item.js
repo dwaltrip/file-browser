@@ -27,6 +27,7 @@ ItemSchema.virtual('isFolder').get(function() { return (this.kind == FOLDER); })
 ItemSchema.virtual('hasParent').get(function() { return (this.parentId != null); });
 ItemSchema.virtual('created_at_relative').get(function() { return relativeDate(this.created_at); });
 ItemSchema.virtual('updated_at_relative').get(function() { return relativeDate(this.updated_at); });
+ItemSchema.virtual('kind_string').get(function() { return (this.kind == this.FILE) ? 'file' : 'folder'; });
 
 // instance methods for Item model
 ItemSchema.methods.children = function(opts, cb) {
@@ -68,6 +69,74 @@ ItemSchema.methods.findProjectRoot = function(cb) {
 
   return this.model('Item').findById(this.projectId, cb);
 };
+
+ItemSchema.methods.findAllChildren = function(callbackForAllChildren) {
+  var all_children_ids = [],
+      all_children_names = [];
+
+  // debugging stuff, verbose flag toggles logging
+  var verbose = false,
+      log = function() { if (verbose) { console.log.apply(this, arguments); } },
+      names_only = function(arry) {
+        var names = [];
+        for(var i=0; i<arry.length; i++) { names.push(arry[i].name); }
+        return names;
+      };
+
+  // recursively query and iterate through all children for current item
+  // pretty cool, works without promises (I'll switch to those later)
+  var pop_next_and_iterate = function(remaining_items) {
+    if (remaining_items.length > 0) {
+      log('==== ==== ====');
+      log('---- DEBUG ---- (0) remaining_items: %s', JSON.stringify(names_only(remaining_items)));
+
+      var item = remaining_items.shift();
+      log('---- ---- ---- item.name: %s', item.name);
+      log('---- DEBUG ---- (1) remaining_items: %s', JSON.stringify(names_only(remaining_items)));
+      log('---- DEBUG ---- (1) all_children_names: %s', JSON.stringify(all_children_names));
+
+      all_children_ids.push(item._id);
+      all_children_names.push(item.name);
+
+      item.children(function(err, childItems) {
+        if (err) console.log(err);
+        log('---- DEBUG ---- item.children.length: %s', childItems.length);
+        log('---- DEBUG ---- (2) all_children_names: %s', JSON.stringify(all_children_names));
+        log('---- DEBUG ---- (2) remaining_items: %s', JSON.stringify(names_only(remaining_items)));
+
+        if (childItems.length > 0) {
+          for(var i=0; i<childItems.length; i++) {
+            remaining_items.push(childItems[i]);
+          }
+          log('---- DEBUG ---- (3) all_children_names: %s', JSON.stringify(all_children_names));
+          log('---- DEBUG ---- (3) remaining_items: %s', JSON.stringify(names_only(remaining_items)));
+        }
+
+        pop_next_and_iterate(remaining_items);
+      });
+    }
+    else {
+      callbackForAllChildren(all_children_ids, all_children_names);
+    }
+  };
+
+  this.children(function(err, childItems) {
+    if(err) console.log(err);
+
+    var remaining_items = [];
+    if (childItems.length > 0) {
+
+      for(var i=0; i<childItems.length; i++) {
+        remaining_items.push(childItems[i]);
+      }
+
+      pop_next_and_iterate(remaining_items);
+    }
+    else {
+      callbackForAllChildren([], []);
+    }
+  });
+}
 
 ItemSchema.methods.kindToString = function() { return (this.kind == FOLDER) ? 'folder' : 'file' };
 
