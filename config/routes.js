@@ -20,8 +20,7 @@ module.exports = function(app){
 	app.get('/items/:id/edit',    items.edit);
 	app.get('/projects/:id/edit', items.edit);
 
-  // should be PUT, but methodOverride wasn't working
-  // fix later
+  // should be PUT not POST, but methodOverride wasn't working (look into & fix later)
 	app.post('/items/:id',     items.update);
 	app.post('/projects/:id',  items.update);
 

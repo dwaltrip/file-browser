@@ -6,7 +6,6 @@
     "body-parser": "latest",
     "hogan-express": "latest",
     "mongoose": "latest",
-    "object-merge": "latest",
     "relative-date": "^1.1.1",
     "method-override": "^1.0.0"
   },

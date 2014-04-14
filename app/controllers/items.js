@@ -1,8 +1,6 @@
 // get Item model
 var Item = require('../models/item');
 
-var merge = require('object-merge');
-
 // lambdas for Hogan templates (they work a little differently for hogan-express vs. standard Mustache)
 // should move this into a helper file at some point
 var lambdas = {
@@ -14,10 +12,10 @@ var lambdas = {
   }
 };
 
-var render = function(res, template, params) {
-  params = params || {};
-  params.lambdas = lambdas;
-  res.render(template, params);
+var render = function(res, template, template_vars) {
+  var template_vars = template_vars || {};
+  template_vars.lambdas = lambdas;
+  res.render(template, template_vars);
 };
 
 var item_parent_path = function(item) {
@@ -67,7 +65,7 @@ exports.controller = {
   },
 
   new: function(req, res) {
-    var params = {
+    var template_vars = {
       action_title: 'Create New',
       parentId:     req.query.parentId || null,
       kind:         req.query.kind == 'file' ? Item.FILE : Item.FOLDER,
@@ -76,14 +74,14 @@ exports.controller = {
       form_action:  '/items'
     }
 
-    render(res, 'items/new', params);
+    render(res, 'items/new', template_vars);
   },
 
   edit: function(req, res) {
     console.log('-- req.params: %s', JSON.stringify(req.params)); // would like to abstract this out
 
     Item.findById(req.params.id, function(err, item) {
-      var params = {
+      var template_vars = {
         action_title: 'Edit',
         button_text:  'Update',
         edit:         true,
@@ -95,7 +93,7 @@ exports.controller = {
         form_method:  'put'
       }
 
-      render(res, 'items/new', params);
+      render(res, 'items/new', template_vars);
     });
   },
 
