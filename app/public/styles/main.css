@@ -1,3 +1,34 @@
+/* ------------------- *
+ * Some custom styling
+ * ------------------- */
+
+.new-item-link-container {
+  padding-left: 0.7em;
+  margin: 4px 10px 4px 0;
+}
+
+span.new-item-link-icon {
+  margin-right: 3px;
+}
+
+span.new-item-link-text {
+  margin-left: 3px;
+}
+
+div#debug-container ul {
+  /* visibility: collapse; */
+  display: none;
+}
+div#debug-container:hover ul {
+  /* visibility: visible; */
+  display: block;
+}
+
+/* ------------------------------------------------------------------ *
+ * A bunch of css that I think came from one of the yeoman generators
+ * Will probably delete at some point later on
+ * ------------------------------------------------------------------ */
+
 .browsehappy {
     margin: 0.2em 0;
     background: #ccc;

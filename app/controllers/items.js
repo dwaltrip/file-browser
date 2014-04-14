@@ -1,72 +1,102 @@
 // get Item model
 var Item = require('../models/item');
 
+var merge = require('object-merge');
+
+// lambdas for Hogan templates (they work a little differently for hogan-express vs. standard Mustache)
+// should move this into a helper file at some point
+var lambdas = {
+  capitalize: function(word) {
+    console.log('-- lambdas.capitalize:', word);
+    word = word.trim();
+    var capitalized = word.charAt(0).toUpperCase() + word.slice(1);
+    return capitalized;
+  }
+};
+
+var render = function(res, template, params) {
+  params = params || {};
+  params.lambdas = lambdas;
+  res.render(template, params);
+};
+
+var item_parent_path = function(item) {
+  var item = item || {};
+  // sort of weird how you have to compare projectId.id to parentId.id
+  if (item.hasParent && item.projectId.id == item.parentId.id)
+    return '/projects/' + item.parentId;
+  else
+    return (item.hasParent) ? ('/items/' + item.parentId) : '/projects';
+};
+
+// ----------------
+// Items Controller
+// ----------------
 exports.controller = {
 
   index: function(req, res) {
-    var projects = [];
-
-    Item.find({ parentId: null }).stream().on('data', function (doc) { projects.push(doc.toObject()) })
-    .on('error', function (err) { console.log('-- error:', err) })
-    .on('close', function () { res.render('items/index', { projects: projects }); });
+    Item.find({ parentId: null }, null, { sort: { created_at: 1 } }, function(err, projects) {
+      render(res, 'items/index', { projects: projects });
+    });
   },
 
   show: function(req, res) {
     Item.findById(req.params.id, function(err, item) {
-      /*
-      Item.find({ parentId: item._id }).stream().on('data', function (doc) { childItems.push(doc.toObject()) })
-      .on('error', function (err) { console.log('-- error:', err) })
-      .on('close', function () {
-        res.render('items/show', { item: item, childItems: childItems, index_link: '/items' });
-      });
-      */
-
-      /*
-      var childItems = [];
-      item.childrenStream({
-        each: function(child) { childItems.push(child.toObject()) },
-        lastly: function() {
-          res.render('items/show', { item: item, childItems: childItems, index_link: '/items' });
-        }
-      });
-      */
-
-      // this logic for determining is incomplete, if the parent is a project root then it should be
-      var back_link = (item.hasParent()) ? ('/items/' + item.parentId) : '/projects';
-      console.log('------ hasParent: %s, parentId: %s, back_link: %s', item.hasParent(), item.parentId, back_link);
-
-      item.children(function(err, childItems) {
-        res.render('items/show', {
-          item: item,
-          childItems: childItems,
-          hasChildren: (childItems.length > 0),
-          back_link: back_link
+      item.findProjectRoot(function(err, project) {
+        item.childrenSorted(function(childItems) {
+          render(res, 'items/show', {
+            project_name: project.name,
+            item: item,
+            childItems: childItems,
+            hasChildren: (childItems.length > 0),
+            back_link: item_parent_path(item)
+          });
         });
       });
     });
   },
 
   new: function(req, res) {
-    var params = { action: '/items' };
-    params.parentId = req.query.parentId || null;
+    var params = {
+      action:       '/items',
+      parentId:     req.query.parentId || null,
+      kind:         req.query.kind == 'file' ? Item.FILE : Item.FOLDER,
+      kind_string:  req.query.kind == 'file' ? 'file' : 'folder',
+      back_link:    req.query.parentId ? ('/items/' + req.query.parentId) : '/projects'
+    }
 
-    res.render('items/new', params);
+    render(res, 'items/new', params);
   },
 
   create: function(req, res) {
-    var kind = (req.body.kind == 'file') ? Item.FILE : Item.FOLDER;
+    var kind = (parseInt(req.body.kind, 10) == Item.FILE) ? Item.FILE : Item.FOLDER;
     var new_item = new Item({ name: req.body.name, kind: kind });
+
+    var save_and_redirect = function() {
+      new_item.save(function (err, saved_item) {
+        if (err) return console.error(err);
+        res.redirect(item_parent_path(saved_item));
+      });
+    };
 
     if (req.body.parentId) {
       Item.findById(req.body.parentId, function(err, parentItem) {
-        console.log('-- parentItem -- name: %s, kind: %s, id: %s', parentItem.name, parentItem.kind, parentItem._id);
+        new_item.parentId = parentItem._id;
+        new_item.projectId = parentItem.projectId || parentItem._id;
+        save_and_redirect();
       });
-      new_item.parentId = req.body.parentId;
     }
+    else {
+      save_and_redirect();
+    }
+  },
 
-    new_item.save(function (err, saved_item) {
-      if (err) return console.error(err);
-      res.redirect('/items');
+  // convencience action for development, deletes all records from Item collection
+  clear_collection: function(req, res) {
+    Item.remove({}, function(err) {
+      Item.count({}, function(err, count) {
+        res.send("<p>Development tool -- all Item records just deleted.</p><p>Item Count: " + count + "</p>" + '<a href="/projects">Projects Index</a>');
+      });
     });
   }
 

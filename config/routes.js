@@ -1,4 +1,3 @@
-
 module.exports = function(app){
 
   var main = require('../app/controllers/main');
@@ -6,9 +5,6 @@ module.exports = function(app){
 
 	// root route
 	app.get('/', items.index);
-
-  // test route
-  app.get('/test', main.test);
 
 	app.get('/projects', items.index);
 	app.get('/items', items.index);
@@ -21,6 +17,9 @@ module.exports = function(app){
 
 	app.get('/projects/:id', items.show);
 	app.get('/items/:id', items.show);
+
+  // for development only, clear Items collection
+  app.get('/clear', items.clear_collection);
 
   // final handler, return 404
   app.use(function(req, res, next) {

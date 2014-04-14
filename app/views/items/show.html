@@ -1,27 +1,74 @@
-<p><a href='{{ back_link }}'>Up one level</a></p>
+<h2>{{ project_name }}</h2>
 
-<ul>
-  <li>Name: {{ item.name }}</li>
-  <li>Kind: {{ item.kind }}</li>
-  <li>hasParent: {{ item.hasParent }}</li>
-  <li>_id: {{ item._id }}</li>
-  <li>created_at: {{ item.created_at }}</li>
-</ul>
+{{#item}}
+  {{#hasParent}}
+    <p><a href='{{ back_link }}'>Up one level</a></p>
+    <h4>{{ item.name }}</h4>
+  {{/hasParent}}
+  {{^hasParent}}
+    <p><a href='/projects'>Projects Index</a></p>
+  {{/hasParent}}
+{{/item}}
 
 {{#hasChildren}}
-<table class='table table-striped'>
+<table class='table table-striped table-bordered'>
   <thead>
-    <td>Name</td>
-    <td>Created at</td>
+    <td></td>
+    <td class='text-center'>Name</td>
+    <td class='text-center'>Created At</td>
   </thead>
 
   {{#childItems}}
     <tr>
-      <td><a href='/projects/{{ _id }}'>{{ name }}</a></td>
-      <td>{{ created_at }}</td>
+      <td class='text-center'>
+        {{#isFolder}}
+          <span class="glyphicon glyphicon-folder-open"></span>
+        {{/isFolder}}
+        {{#isFile}}
+          <span class="glyphicon glyphicon-file"></span>
+        {{/isFile}}
+      </td>
+
+      <td><a href='/items/{{ _id }}'>{{ name }}</a></td>
+      <td class='text-center'>{{ created_at_relative }}</td>
     </tr>
   {{/childItems}}
 </table>
 {{/hasChildren}}
 
-<p><a href='/items/new?parentId={{ item._id }}'>Add child item</a></p>
+{{#item}}
+{{#isFolder}}
+<p>
+  Add new...
+  <div class='new-item-link-container'>
+    <span class='glyphicon glyphicon-folder-open new-item-link-icon'></span>
+    <a href='/items/new?parentId={{ item._id }}&kind=folder'>
+      <span class='new-item-link-text'>Folder</span>
+    </a><br>
+  </div>
+  <div class='new-item-link-container'>
+    <span class='glyphicon glyphicon-file new-item-link-icon'></span>
+    <a href='/items/new?parentId={{ item._id }}&kind=file'>
+      <span class='new-item-link-text'>File</span>
+    </a>
+  </div>
+</p>
+{{/isFolder}}
+{{/item}}
+
+<br>
+<br>
+<div id='debug-container'>
+  <span>Hover to see item details (for debugging)</span>
+  <ul>
+    <li>Name: {{ item.name }}</li>
+    <li>Kind: {{ item.kind }}</li>
+    <li>hasParent: {{ item.hasParent }}</li>
+    <li>isFile: {{ item.isFile }}</li>
+    <li>isFolder: {{ item.isFolder }}</li>
+    <li>_id: {{ item._id }}</li>
+    <li>created_at: {{ item.created_at }}</li>
+    <li>parentId: {{ item.parentId }}</li>
+    <li>projectId: {{ item.projectId }}</li>
+  </ul>
+</div>

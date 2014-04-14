@@ -6,10 +6,3 @@ exports.index = function(req, res) {
   res.render('homepage', { greeting: 'Hello there' });
 };
 
-exports.test = function(req, res) {
-  Item.remove({}, function(err) {
-    Item.count({}, function(err, count) {
-      res.send("<p>Test method, all Item records just deleted.</p><p>Item Count: " + count + "</p>");
-    });
-  });
-};

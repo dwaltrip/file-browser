@@ -6,10 +6,6 @@ var express = require('express'),
 
 var app = express();
 
-// all environments
-//app.set('port', process.env.PORT || config.PORT);
-app.set('port', 582);
-
 require('./config/express')(app, config);
 require('./config/routes')(app);
 
@@ -21,16 +17,9 @@ var connect = function () {
 connect();
 
 // Callbacks for db connection events
-mongoose.connection.on('connected', function () {
-  console.log('---- Mongoose default connection open to ' + config.db);
-});
-mongoose.connection.on('disconnected', function () {
-  console.log('---- Mongoose default connection disconnected');
-});
-mongoose.connection.on('error', function (err) {
-  console.error('----', err);
-})
-
+mongoose.connection.on('connected', function () { console.log('---- Mongoose  connection open to ' + config.db); });
+mongoose.connection.on('disconnected', function () { console.log('---- Mongoose disconnected'); });
+mongoose.connection.on('error', function (err) { console.error('----', err); })
 
 // start listening for requests
 http.createServer(app).listen(app.get('port'), function () {
