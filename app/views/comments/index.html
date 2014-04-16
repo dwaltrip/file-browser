@@ -1,0 +1,45 @@
+
+<ul class='comments-container'>
+</ul>
+
+<div class='container'>
+  <div class='bb-content'>
+  </div>
+</div>
+
+{{#yield-additional_scripts}}
+  <script type='text/javascript'>
+    var Comment = Backbone.Model.extend({
+      idAttribute: '_id',
+      initialize: function() { console.log('new comment with id: %s', this.id) },
+      url: function() { '/comments' + this.id; }
+    });
+
+    var Comments = Backbone.Collection.extend({
+      model: Comment,
+      url: '/comments'
+    });
+
+    var CommentListView = Backbone.View.extend({
+        el: 'ul.comments-container',
+
+        initialize: function() {
+          var that = this;
+          this.collection = new Comments();
+          this.collection.fetch({ success: function() { that.render() } });
+        },
+
+        render: function() {
+          var template = new Hogan.Template(Templates.comment_list);
+          this.$el.html(template.render({ comments: this.collection.toJSON() }));
+        }
+    });
+
+    (function($) {
+
+      var comment_list_view = new CommentListView();
+
+    })(jQuery);
+
+  </script>
+{{/yield-additional_scripts}}

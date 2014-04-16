@@ -154,7 +154,7 @@ exports.controller = {
     });
   },
 
-  // convencience action for development, deletes all records from Item collection
+  // convenience action for development, deletes all records from Item collection
   clear_collection: function(req, res) {
     Item.remove({}, function(err) {
       Item.count({}, function(err, count) {

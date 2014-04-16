@@ -45,4 +45,4 @@ module.exports = function(app, config) {
   else if (env == 'production') {
     app.enable('view cache');
   }
-}
+};

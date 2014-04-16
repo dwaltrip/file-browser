@@ -1,11 +1,16 @@
-module.exports = function(app){
+var hogan = require('hogan.js'),
+    fs = require('fs');
+
+module.exports = function(app, config) {
 
   var main = require('../app/controllers/main');
   var items = require('../app/controllers/items').controller;
+  var comments = require('../app/controllers/comments').controller;
 
 	// root route
 	app.get('/', items.index);
 
+  // item routes
 	app.get('/items',     items.index);
 	app.get('/projects',  items.index);
 
@@ -29,6 +34,15 @@ module.exports = function(app){
 
   // for development only, clear Items collection
   app.get('/clear', items.clear_collection);
+
+
+  // comment routes
+  app.get('/comments', comments.index);
+
+
+  // route for sending pre-compiled templates to client
+  app.get('/templates.js', require('./template-compiler')(config.root));
+
 
   // final handler, return 404
   app.use(function(req, res, next) {

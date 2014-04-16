@@ -7,7 +7,7 @@ var express = require('express'),
 var app = express();
 
 require('./config/express')(app, config);
-require('./config/routes')(app);
+require('./config/routes')(app, config);
 
 // Set up db connection
 var connect = function () {
