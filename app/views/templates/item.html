@@ -18,7 +18,7 @@
     </div>
   {{/hasParent}}{{/item}}
 
-  {{#item}}
+  {{#item}} {{^isRoot}}
     <div class='item-actions-container pull-right'>
       <div class='action-link-container item-action'>
         <a href='/items/{{ item._id }}/edit'>
@@ -49,9 +49,10 @@
         </div>
       {{/isFolder}}
     </div>
-  {{/item}}
+  {{/isRoot}} {{/item}}
 </div>
 
+{{ inspect }}
 {{# hasChildren }}
   <table class='table table-striped table-bordered child-item-table'>
     <thead>
@@ -72,7 +73,7 @@
   <br>
 {{/isFile}}{{/item}}
 
-{{#item}}
+{{#item}} {{^isRoot}}
   <div class='container'>
     <form action='/items/{{ item._id }}/delete' method='post' class='delete-form'>
       <button type='submit' value='submit' class='btn btn-danger btn-xs'>
@@ -81,8 +82,8 @@
       </button>
     </form>
   </div>
-{{/item}}
+{{/isRoot}} {{/item}}
 
-{{#isRoot}}
+{{#item}} {{#isRoot}}
   <p class='new-project-link'><a href='/projects/new'>Create new project</a></p>
-{{/isRoot}}
+{{/isRoot}} {{/item}}

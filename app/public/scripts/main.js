@@ -42,7 +42,8 @@ var Item = Backbone.Model.extend({
       return _.merge(this.toJSON(), {
         hasParent: this.hasParent(),
         isFile: this.isFile(),
-        isFolder: this.isFolder()
+        isFolder: this.isFolder(),
+        isRoot: this.isRoot
       });
     }
 });
@@ -121,10 +122,12 @@ var ItemView = Backbone.View.extend({
       var template = new Hogan.Template(Templates.item);
       var that = this;
 
+      /*
       var item = false;
       if (this.model.id || this.model.get('id')) {
         item = this.model.toExtendedJSON();
-      }
+      }*/
+      var item = this.model.toExtendedJSON();
 
       this.$el.html(template.render({
         project_name: (this.model.project_name || 'Projects'),
@@ -134,9 +137,13 @@ var ItemView = Backbone.View.extend({
         inspect: inspector
       }));
 
-      _(this.model.collection.models).each(function(childItem) {
-        that.appendChild(childItem);
-      }, this);
+
+      console.log('--- ItemView.render -- this.model.collection', this.model.collection);
+      if (this.model.collection) {
+        _(this.model.collection.models).each(function(childItem) {
+          that.appendChild(childItem);
+        }, this);
+      }
     },
 
     events: {
@@ -150,6 +157,7 @@ var ItemView = Backbone.View.extend({
     },
 
     appendChild: function(item) {
+      console.log('--- appendChild -- item.get(name)', item.get('name'));
       item.parentItem = this.model;
       var childView = new ChildItemView({ model: item });
       $('.child-item-table tbody', this.el).append(childView.render().el);
