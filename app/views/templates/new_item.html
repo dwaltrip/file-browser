@@ -1,0 +1,18 @@
+<form action='{{ form_action }}' method='post'>
+  <p>
+    <label for='name'>Name:</label><br>
+    <input name='name' type='text'/>
+  <p/>
+  <p><input type='submit' name='submit' value='{{button_text}}{{^button_text}}Submit{{/button_text}}' /></p>
+
+  {{^edit}}
+    <input type='hidden' name='kind' value='{{kind}}'>
+    {{#parentId}}
+      <input type='hidden' name='parentId' value='{{parentId}}'>
+    {{/parentId}}
+  {{/edit}}
+
+  {{#form_method}}
+    <input type='hidden' name='_method' value='{{form_method}}'>
+  {{/form_method}}
+</form>

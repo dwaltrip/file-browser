@@ -1,0 +1,7 @@
+item<td class='text-center'>
+  {{#isFolder}}<span class="glyphicon glyphicon-folder-open"></span>{{/isFolder}}
+  {{#isFile}}<span class="glyphicon glyphicon-file"></span> {{/isFile}}
+</td>
+
+<td><a href='/items/{{ _id }}'>{{ name }}</a></td>
+<td class='text-center'>{{ updated_at_relative }}</td>

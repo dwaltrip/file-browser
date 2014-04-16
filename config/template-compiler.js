@@ -1,7 +1,7 @@
 var hogan = require('hogan.js'),
     fs = require('fs');
 
-var template_files = ['comment_list'];
+var template_files = ['comment_list', 'item', 'child_row'];
 var already_compiled_templates = false;
 
 var client_side_template_object = 'Templates';

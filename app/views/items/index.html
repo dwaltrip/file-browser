@@ -1,17 +1,19 @@
-<h2>Projects</h2>
+<div id='item-list-container'>
+  <h2 class='project-name'>Projects</h2>
 
-<table class='table table-striped table-bordered'>
-  <thead>
-    <td>Name</td>
-    <td class='text-center'>Updated At</td>
-  </thead>
+  <table class='table table-striped table-bordered'>
+    <thead>
+      <td>Name</td>
+      <td class='text-center'>Updated At</td>
+    </thead>
 
-  {{#projects}}
-    <tr>
-      <td><a href='/projects/{{ _id }}'>{{ name }}</a></td>
-      <td class='text-center'>{{ updated_at_relative }}</td>
-    </tr>
-  {{/projects}}
-</table>
+    {{#projects}}
+      <tr>
+        <td><a href='/projects/{{ _id }}'>{{ name }}</a></td>
+        <td class='text-center'>{{ updated_at_relative }}</td>
+      </tr>
+    {{/projects}}
+  </table>
 
-<p><a href='/projects/new'>Create new project</a></p>
+  <p><a href='/projects/new'>Create new project</a></p>
+</div>

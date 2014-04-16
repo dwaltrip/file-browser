@@ -42,26 +42,65 @@ exports.controller = {
 
   index: function(req, res) {
     Item.find({ parentId: null }, null, { sort: { created_at: 1 } }, function(err, projects) {
-      render(res, 'items/index', { projects: projects });
+      res.format({
+        html: function() {
+          render(res, 'items/index', { projects: projects });
+        },
+        json: function() {
+          var _projects = [];
+          for(var i=0; i<projects.length; i++) {
+            var project = projects[i].toObject();
+            project.updated_at_relative = projects[i].updated_at_relative;
+            _projects.push(project);
+          }
+
+          res.json({ projects: _projects, isRootList: true });
+        }
+      });
     });
   },
 
   show: function(req, res) {
     console.log('-- req.params: %s', JSON.stringify(req.params)); // would like to abstract this out
 
-    Item.findById(req.params.id, function(err, item) {
-      item.findProjectRoot(function(err, project) {
-        item.childrenSorted(function(childItems) {
-          render(res, 'items/show', {
-            project_name: project.name,
-            item: item,
-            childItems: childItems,
-            hasChildren: (childItems.length > 0),
-            back_link: item_parent_path(item)
+    var respond = function(data) {
+      res.format({
+        html: function() { render(res, 'items/show', data); },
+        json: function() { res.json(data); }
+      });
+    };
+
+    var addFields = function(items) {
+      var items_with_fields = [];
+      for(var i=0; i<items.length; i++) {
+        var item = items[i].toObject();
+        item.updated_at_relative = items[i].updated_at_relative;
+        item.isFolder = items[i].isFolder;
+        items_with_fields.push(item);
+      }
+      return items_with_fields;
+    };
+
+    if (req.params.id) {
+      Item.findById(req.params.id, function(err, item) {
+        item.findProjectRoot(function(err, project) {
+          item.childrenSorted(function(childItems) {
+            respond({
+              project_name: project.name,
+              item: item,
+              childItems: addFields(childItems),
+              hasChildren: (childItems.length > 0),
+              back_link: item_parent_path(item)
+            });
           });
         });
       });
-    });
+    }
+    else {
+      Item.find({ parentId: null }, null, { sort: { created_at: 1 } }, function(err, projects) {
+        respond({ isRoot: true, childItems: addFields(projects), hasChildren: true, project_name: 'Projects' });
+      });
+    }
   },
 
   new: function(req, res) {

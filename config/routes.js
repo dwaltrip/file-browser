@@ -8,11 +8,14 @@ module.exports = function(app, config) {
   var comments = require('../app/controllers/comments').controller;
 
 	// root route
-	app.get('/', items.index);
+	//app.get('/', items.index);
+	app.get('/', items.show);
 
   // item routes
-	app.get('/items',     items.index);
-	app.get('/projects',  items.index);
+	//app.get('/items',     items.index);
+	//app.get('/projects',  items.index);
+	app.get('/items',     items.show);
+	app.get('/projects',  items.show);
 
 	app.post('/items', items.create);
 

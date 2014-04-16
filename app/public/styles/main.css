@@ -19,6 +19,10 @@ table.item-table {
   margin-bottom: 0;
 }
 
+.new-project-link {
+  margin-top: 20px;
+}
+
 .file-contents-container {
   text-align: left;
   display: inline-block;
